@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="11dp"
+        android:layout_marginRight="11dp"
+        android:layout_marginTop="7dp"
+        android:layout_marginBottom="7dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+
+                android:id="@+id/imgTitle"
+                android:scaleType="centerCrop"
+                android:layout_width="match_parent"
+                android:layout_height="200dp" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_alignBottom="@id/imgTitle"
+                android:layout_marginBottom="2dp"
+                android:src="@drawable/button_shadow"/>
+
+            <ProgressBar
+                android:id="@+id/pbLoadImage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Small"
+                android:layout_marginTop="50dp"/>
+
+            <TextView
+                android:id="@+id/txtAuthor"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:text="Author"
+                android:textColor="#fff"
+                android:gravity="bottom"
+                android:layout_marginRight="160dp"
+                android:layout_alignRight="@id/layoutDate"
+                android:layout_alignStart="@id/txtTitle"
+                android:layout_alignTop="@id/layoutDate"
+                android:layout_alignEnd="@id/layoutDate"
+                android:layout_alignLeft="@id/txtTitle"/>
+
+            <FrameLayout
+                android:id="@+id/layoutDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="20dp"
+                android:layout_alignBottom="@id/imgTitle"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/round_button">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_date" />
+
+                <TextView
+                    android:id="@+id/txtPublishedAt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginRight="10dp"
+                    android:text="02 Febrary 2019"
+                    />
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/txtTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Title"
+                android:textColor="@color/colorTextTitle"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:layout_marginTop="10dp"
+                android:layout_below="@id/imgTitle"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"/>
+
+            <TextView
+                android:id="@+id/txtDesc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Desc"
+                android:layout_below="@+id/txtTitle"
+                android:layout_alignLeft="@+id/txtTitle"
+                android:layout_alignRight="@+id/txtTitle"
+                android:layout_marginTop="5dp"/>
+
+            <TextView
+                android:id="@+id/txtSource"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:text="Source"
+                android:layout_below="@+id/txtDesc"
+                android:layout_alignLeft="@+id/txtTitle"
+                android:textStyle="bold"
+                android:textColor="@color/colorTextTitle"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"/>
+
+            <TextView
+                android:id="@+id/txtTime"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:text="Time"
+                android:layout_marginLeft="5dp"
+                android:layout_below="@+id/txtDesc"
+                android:layout_toRightOf="@id/txtSource"
+                android:layout_alignTop="@+id/txtSource"/>
+
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+</FrameLayout>
