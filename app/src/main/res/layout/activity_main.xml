@@ -27,6 +27,7 @@
                 android:layout_marginRight="16dp"
                 android:textSize="17sp"
                 android:textStyle="bold"
+                android:textColor="@color/colorTextTitle"
                 android:fontFamily="sans-serif-light"/>
 
                 <androidx.recyclerview.widget.RecyclerView

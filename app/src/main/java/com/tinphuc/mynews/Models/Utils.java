@@ -1,5 +1,7 @@
 package com.tinphuc.mynews.Models;
 
+import android.util.Log;
+
 import org.ocpsoft.prettytime.PrettyTime;
 
 import java.text.ParseException;
@@ -15,7 +17,8 @@ public class Utils {
         String isTime = null;
         try {
 //            Chuyển định dạng của JSON về chuẩn định dạng SimpleDateFomat của ENGLISH
-            SimpleDateFormat sdf = new SimpleDateFormat("YYYY-mm-dd'T'HH:mm:ss'Z'", Locale.ENGLISH);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'",
+                    Locale.ENGLISH);
             Date date = sdf.parse(oldDateString);
 //            Chuyển định dạng date theo đúng định dạng đối tượng PrettyTime ở trên và cuối cùng là thành định dạng String
             isTime = prettyTime.format(date);
@@ -26,11 +29,13 @@ public class Utils {
     }
 
     public static String DateFomat(String oldDateString) {
-        SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MM yyyy", Locale.ENGLISH);
+        SimpleDateFormat sdf = new SimpleDateFormat("E, dd MM yyyy",
+                Locale.ENGLISH);
         String isDate = null;
         try {
-            Date date = sdf.parse(oldDateString);
-            isDate = String.valueOf(date);
+            Date date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'",
+                    Locale.ENGLISH).parse(oldDateString);
+            isDate = sdf.format(date);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -40,7 +45,7 @@ public class Utils {
     public static String getCountry(){
 //        Lấy định dạng locale theo đúng máy ảo JVM
         Locale locale = Locale.getDefault();
-        String country = String.valueOf(locale.getLanguage());
+        String country = String.valueOf(locale.getCountry());
         return country.toLowerCase();
     }
 }

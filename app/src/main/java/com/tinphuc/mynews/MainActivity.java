@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.tinphuc.mynews.Adapter.ArticleAdapter;
@@ -38,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
         newsList = findViewById(R.id.newsList);
         layoutManager = new LinearLayoutManager(MainActivity.this);
         newsList.setLayoutManager(layoutManager);
+        articleAdapter = new ArticleAdapter(articles, MainActivity.this);
+        newsList.setAdapter(articleAdapter);
         newsList.setHasFixedSize(true);
         newsList.setItemAnimator(new DefaultItemAnimator());
         newsList.setNestedScrollingEnabled(false);
@@ -56,9 +59,7 @@ public class MainActivity extends AppCompatActivity {
                     if (!articles.isEmpty()){
                         articles.clear();
                     }
-                    articles = response.body().getListArticle();
-                    articleAdapter = new ArticleAdapter(articles, MainActivity.this);
-                    newsList.setAdapter(articleAdapter);
+                    articles.addAll(response.body().getListArticle());
                     articleAdapter.notifyDataSetChanged();
                 }else{
                     Toast.makeText(MainActivity.this, "No Result", Toast.LENGTH_LONG);
@@ -67,7 +68,6 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<News> call, Throwable t) {
-
             }
         });
 
