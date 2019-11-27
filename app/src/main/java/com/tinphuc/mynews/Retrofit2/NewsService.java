@@ -7,8 +7,10 @@ import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 public interface NewsService {
+//    endpoint của API
     @GET("top-headlines")
     Call<News> getNews(
+//          @Query() dùng để lọc dữ liệu từ máy chủ
         @Query("country") String country,
         @Query("apiKey") String apiKey
     );

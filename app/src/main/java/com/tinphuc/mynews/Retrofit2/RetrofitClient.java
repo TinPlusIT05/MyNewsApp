@@ -29,6 +29,7 @@ public class RetrofitClient {
             retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_ULS)
                     .client(buider)
+                    // Xác định bộ chuyển đổi JSON chúng ta cần đó là GSON
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .build();
         }

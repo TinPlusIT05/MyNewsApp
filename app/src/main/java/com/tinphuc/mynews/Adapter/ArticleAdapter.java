@@ -15,8 +15,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.tinphuc.mynews.Models.Article;
 import com.tinphuc.mynews.Models.Utils;
@@ -34,6 +37,8 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.DataView
         this.context = mContext;
     }
 
+//  Phương thức onCreateViewHolder dùng để gán giao diện cho RecyclerView.ViewHolder
+//  Phương thức này sẽ là chính tạo ra các item trên View thông qua ViewHolder
     @NonNull
     @Override
     public ArticleAdapter.DataViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -50,12 +55,22 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.DataView
         return new DataViewHolder(itemView);
     }
 
+//    Phương thức onBindViewHolder dùng để gán dữ liệu từ listData vào viewHolder
     @Override
     public void onBindViewHolder(@NonNull final ArticleAdapter.DataViewHolder holder, int position) {
         Article article = articles.get(position);
 
+//        Phương thức RequestOptions cung cấp các loại tùy chọn độc lọc để tùy chỉnh load ảnh với Glide
+        RequestOptions requestOptions = new RequestOptions()
+                .placeholder(Utils.randomColorDrawable())
+                .error(Utils.randomColorDrawable())
+//                Cơ chế lưu bộ nhớ đệm với đối tượng requestOptions là DiskCacheStrategy.ALL
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .centerCrop();
+
         Glide.with(context)
                 .load(article.getUrlToImage())
+                .apply(requestOptions)
                 .listener(new RequestListener<Drawable>() {
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
@@ -69,6 +84,8 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.DataView
                         return false;
                     }
                 })
+//                Hiệu ứng chuyển ảnh mờ dần cho Drawable
+                .transition(DrawableTransitionOptions.withCrossFade())
                 .into(holder.imgTitle);
 
         holder.txtTitle.setText(article.getTitle());
@@ -76,7 +93,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.DataView
         holder.txtSource.setText(article.getSource().getName());
         holder.txtPublishedAt.setText(Utils.DateFomat(article.getPublishedAt()));
         holder.txtAuthor.setText(article.getAuthor());
-        holder.txtTime.setText("\u2022" + Utils.DateToTimeFomat(article.getPublishedAt()));
+        holder.txtTime.setText("\u2022 " + Utils.DateToTimeFomat(article.getPublishedAt()));
 
     }
 
@@ -85,6 +102,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.DataView
         return articles.size();
     }
 
+//    class này giúp kiểm soát các view tốt hơn, tránh việc findViewById nhiều lần, trong file item.xml
     public class DataViewHolder extends RecyclerView.ViewHolder{
 
         private ImageView imgTitle;
