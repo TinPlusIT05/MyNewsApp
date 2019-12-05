@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.os.Bundle;
 import android.view.Menu;
@@ -26,13 +27,14 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener{
 
     private static final String API_KEY = "c91ee0f2487d4f9eb6140b6711a6af19";
     private RecyclerView newsRecyView;
     private ArticleAdapter articleAdapter;
     private RecyclerView.LayoutManager layoutManager;
     private List<Article> articles = new ArrayList<>();
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         newsRecyView = findViewById(R.id.newsRecyView);
+        swipeRefreshLayout = findViewById(R.id.swipe_fresh_layout);
+
         layoutManager = new LinearLayoutManager(MainActivity.this);
         newsRecyView.setLayoutManager(layoutManager);
 
@@ -48,47 +52,56 @@ public class MainActivity extends AppCompatActivity {
         newsRecyView.setHasFixedSize(true);
         newsRecyView.setItemAnimator(new DefaultItemAnimator());
         newsRecyView.setNestedScrollingEnabled(false);
-        LoadJson(null);
 
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        swipeRefreshLayout.setOnRefreshListener(this);
+        swipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorPrimary));
+
+        onLoadingLayoutRefresh(null);
+
+
     }
 
-    public void LoadJson(String query){
+    public void LoadJson(final String query) {
 //        Thực hiện request
         NewsService newsService = RetrofitClient.getClient().create(NewsService.class);
         String country = Utils.getCountry();
         String language = Utils.geLanguage();
         Call<News> resultgetNews;
 
-        if(query != null){
+        if (query != null) {
             resultgetNews =
                     newsService.getNewsSearch(query, language, "publishedAt", API_KEY);
-        }else{
+        } else {
             resultgetNews = newsService.getNews(country, API_KEY);
         }
 
+        swipeRefreshLayout.setRefreshing(true);
 //        Phương thức enqueue thực hiện request bất đồng bộ
 //        và thông báo cho ứng dụng khi có phản hồi từ server.
         resultgetNews.enqueue(new Callback<News>() {
-                    @Override
-                    public void onResponse(Call<News> call, Response<News> response) {
-                        if(response.isSuccessful() && response.body().getListArticle() != null){
-                            if (!articles.isEmpty()){
-                                articles.clear();
-                            }
-                            articles.addAll(response.body().getListArticle());
-                            articleAdapter.notifyDataSetChanged();
-                        }else{
-                            Toast.makeText(MainActivity.this,
-                                    "Kết nối thất bại !", Toast.LENGTH_LONG);
-                        }
+            @Override
+            public void onResponse(Call<News> call, Response<News> response) {
+                if (response.isSuccessful() && response.body().getListArticle() != null) {
+                    if (!articles.isEmpty()) {
+                        articles.clear();
                     }
+                    articles.addAll(response.body().getListArticle());
+                    articleAdapter.notifyDataSetChanged();
 
-                    @Override
-                    public void onFailure(Call<News> call, Throwable t) {
+//                    dừng refreshing và đồng nghĩa là tắt vòng tròn chạy
+                    swipeRefreshLayout.setRefreshing(false);
+                } else {
+                    swipeRefreshLayout.setRefreshing(false);
+                    Toast.makeText(MainActivity.this,
+                            "Kết nối thất bại !", Toast.LENGTH_LONG);
+                }
+            }
 
-                    }
-                });
+            @Override
+            public void onFailure(Call<News> call, Throwable t) {
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
     }
 
     @Override
@@ -104,8 +117,8 @@ public class MainActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                if(query.length() > 2)
-                    LoadJson(query);
+                if (query.length() > 2)
+                    onLoadingLayoutRefresh(query);
                 else
                     Toast.makeText(MainActivity.this,
                             "Tìm kiếm với hai từ khóa trở lên !", Toast.LENGTH_LONG).show();
@@ -118,8 +131,25 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-        itemSearch.getIcon().setVisible(false,false);
+        itemSearch.getIcon().setVisible(false, false);
         return true;
 
+    }
+
+//  phương thức onRefresh sẽ thực hiện khi lắng nghe sự kiện swipeRefreshLayout.setOnRefreshListener
+//  còn được gọi là khi ta swipe
+    @Override
+    public void onRefresh() {
+        LoadJson(null);
+    }
+
+//    mục đích của phương thức để tạo độ trễ cho luồng UI nên ta mới thấy vòng tròn chạy bên trong
+    private void onLoadingLayoutRefresh(final String query){
+        swipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                LoadJson(query);
+            }
+        });
     }
 }
