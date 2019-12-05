@@ -14,4 +14,12 @@ public interface NewsService {
         @Query("country") String country,
         @Query("apiKey") String apiKey
     );
+
+    @GET("everything")
+    Call<News> getNewsSearch(
+            @Query("q") String query,
+            @Query("language") String language,
+            @Query("sortBy") String sortby,
+            @Query("apiKey") String apikey
+    );
 }

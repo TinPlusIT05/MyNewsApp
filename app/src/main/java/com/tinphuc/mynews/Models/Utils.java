@@ -55,6 +55,12 @@ public class Utils {
         return country.toLowerCase();
     }
 
+    public static String geLanguage(){
+        Locale locale = Locale.getDefault();
+        String launguage = String.valueOf(locale.getLanguage());
+        return launguage.toLowerCase();
+    }
+
     public static ColorDrawable vibrantLightColorList[] = {
             new ColorDrawable(Color.parseColor("#ffeead")),
             new ColorDrawable(Color.parseColor("#93cfb3")),

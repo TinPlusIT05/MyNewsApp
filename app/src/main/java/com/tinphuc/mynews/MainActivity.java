@@ -6,6 +6,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.tinphuc.mynews.Adapter.ArticleAdapter;
@@ -44,16 +48,28 @@ public class MainActivity extends AppCompatActivity {
         newsRecyView.setHasFixedSize(true);
         newsRecyView.setItemAnimator(new DefaultItemAnimator());
         newsRecyView.setNestedScrollingEnabled(false);
-        LoadJson();
+        LoadJson(null);
+
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    public void LoadJson(){
+    public void LoadJson(String query){
 //        Thực hiện request
         NewsService newsService = RetrofitClient.getClient().create(NewsService.class);
         String country = Utils.getCountry();
-        newsService.getNews(country, API_KEY)
-//                  Phương thức enqueue thực hiện request bất đồng bộ và thông báo cho ứng dụng khi có phản hồi từ server.
-                .enqueue(new Callback<News>() {
+        String language = Utils.geLanguage();
+        Call<News> resultgetNews;
+
+        if(query != null){
+            resultgetNews =
+                    newsService.getNewsSearch(query, language, "publishedAt", API_KEY);
+        }else{
+            resultgetNews = newsService.getNews(country, API_KEY);
+        }
+
+//        Phương thức enqueue thực hiện request bất đồng bộ
+//        và thông báo cho ứng dụng khi có phản hồi từ server.
+        resultgetNews.enqueue(new Callback<News>() {
                     @Override
                     public void onResponse(Call<News> call, Response<News> response) {
                         if(response.isSuccessful() && response.body().getListArticle() != null){
@@ -63,7 +79,8 @@ public class MainActivity extends AppCompatActivity {
                             articles.addAll(response.body().getListArticle());
                             articleAdapter.notifyDataSetChanged();
                         }else{
-                            Toast.makeText(MainActivity.this, "No Result", Toast.LENGTH_LONG);
+                            Toast.makeText(MainActivity.this,
+                                    "Kết nối thất bại !", Toast.LENGTH_LONG);
                         }
                     }
 
@@ -72,5 +89,37 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                 });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+//        return MenuInflacter:
+//        được dùng để khởi tạo menu XML file vào trong Menu object của context hiện tại
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.menu_main, menu);
+        MenuItem itemSearch = menu.findItem(R.id.itemSearch);
+        //return SearchView được đặt trong menu item
+        SearchView searchView = (SearchView) itemSearch.getActionView();
+        searchView.setQueryHint("Tìm kiếm mới nhất...");
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                if(query.length() > 2)
+                    LoadJson(query);
+                else
+                    Toast.makeText(MainActivity.this,
+                            "Tìm kiếm với hai từ khóa trở lên !", Toast.LENGTH_LONG).show();
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                LoadJson(null);
+                return false;
+            }
+        });
+        itemSearch.getIcon().setVisible(false,false);
+        return true;
+
     }
 }
