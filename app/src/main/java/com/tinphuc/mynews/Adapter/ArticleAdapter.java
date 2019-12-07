@@ -31,6 +31,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.DataView
 
     private List<Article> articles;
     Context context;
+    private OnItemClickListener onItemClickListener;
 
     public ArticleAdapter(List<Article> mArticles, Context mContext){
         this.articles = mArticles;
@@ -52,7 +53,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.DataView
         itemView = layoutInflater.inflate(R.layout.item, parent, false);
 
 //      Trả về đối tượng Data View Holder với view như trên
-        return new DataViewHolder(itemView);
+        return new DataViewHolder(itemView, onItemClickListener);
     }
 
 //    Phương thức onBindViewHolder dùng để gán dữ liệu từ listData vào viewHolder
@@ -103,13 +104,14 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.DataView
     }
 
 //    class này giúp kiểm soát các view tốt hơn, tránh việc findViewById nhiều lần, trong file item.xml
-    public class DataViewHolder extends RecyclerView.ViewHolder{
+    public class DataViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         private ImageView imgTitle;
         private TextView txtTitle, txtTime, txtPublishedAt, txtAuthor, txtSource, txtDesc;
         private ProgressBar pbLoadImage;
+        OnItemClickListener onItemClickListener;
 
-        public DataViewHolder(@NonNull View itemView) {
+        public DataViewHolder(@NonNull View itemView, OnItemClickListener onItemClickListener) {
             super(itemView);
             imgTitle = itemView.findViewById(R.id.imgTitle);
             txtTitle = itemView.findViewById(R.id.txtTitle);
@@ -119,6 +121,23 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.DataView
             txtSource = itemView.findViewById(R.id.txtSource);
             txtDesc = itemView.findViewById(R.id.txtDesc);
             pbLoadImage = itemView.findViewById(R.id.pbLoadImage);
+
+            this.onItemClickListener = onItemClickListener;
         }
+
+    @Override
+    public void onClick(View v) {
+        onItemClickListener.OnItemClick(v, getAdapterPosition());
+    }
+}
+
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener){
+        this.onItemClickListener = onItemClickListener;
+    }
+
+//    khai báo một interface
+    public interface  OnItemClickListener {
+        void OnItemClick(View view, int position);
     }
 }

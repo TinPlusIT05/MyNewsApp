@@ -6,10 +6,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -58,7 +60,6 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
         onLoadingLayoutRefresh(null);
 
-
     }
 
     public void LoadJson(final String query) {
@@ -87,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                     }
                     articles.addAll(response.body().getListArticle());
                     articleAdapter.notifyDataSetChanged();
-
+                    initListener();
 //                    dừng refreshing và đồng nghĩa là tắt vòng tròn chạy
                     swipeRefreshLayout.setRefreshing(false);
                 } else {
@@ -149,6 +150,16 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             @Override
             public void run() {
                 LoadJson(query);
+            }
+        });
+    }
+
+    private void initListener() {
+        articleAdapter.setOnItemClickListener(new ArticleAdapter.OnItemClickListener() {
+            @Override
+            public void OnItemClick(View view, int position) {
+                Intent intent = new Intent(MainActivity.this, NewsDetailActivity.class);
+                startActivity(intent);
             }
         });
     }
