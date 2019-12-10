@@ -122,12 +122,13 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.DataView
             txtDesc = itemView.findViewById(R.id.txtDesc);
             pbLoadImage = itemView.findViewById(R.id.pbLoadImage);
 
+            itemView.setOnClickListener(this);
             this.onItemClickListener = onItemClickListener;
         }
 
     @Override
     public void onClick(View v) {
-        onItemClickListener.OnItemClick(v, getAdapterPosition());
+       onItemClickListener.OnItemClick(v, getAdapterPosition());
     }
 }
 

@@ -11,15 +11,19 @@
         android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="250dp"
-        android:background="@color/colorPrimaryDark">
+        android:fitsSystemWindows="true"
+        android:theme="@style/MyAppBarLayoutTheme">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
-                android:id="@+id/collapsing_toolbar"
+            android:id="@+id/collapsing_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:contentScrim="@color/colorPrimary"
+            app:titleEnabled="false">
 
             <ImageView
-                android:id="@+id/imgBackDrop"
+                android:id="@+id/image_backdrop"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layout_collapseMode="parallax"
@@ -27,8 +31,7 @@
                 android:scaleType="centerCrop"/>
 
             <RelativeLayout
-                android:id="@+id/headerContent"
-                app:layout_collapseMode="pin"
+                android:id="@+id/header_content"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -49,29 +52,36 @@
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize">
+                android:layout_height="?attr/actionBarSize"
+                app:layout_scrollFlags="scroll|enterAlways"
+                app:layout_collapseMode="pin"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
                 <LinearLayout
-                    android:id="@+id/titleAppBar"
+                    android:id="@+id/title_appbar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:clickable="false"
                     android:orientation="vertical">
 
                     <TextView
-                            android:id="@+id/txtTitleAppbar"
+                        android:id="@+id/text_title_appbar"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="News for you"
+                        android:text="@string/title_appbar"
                         android:textSize="18sp"
-                        android:textStyle="bold"/>
+                        android:singleLine="true"
+                        android:textStyle="bold"
+                        style="@style/Base.TextAppearance.AppCompat.Widget.ActionBar.Title"/>
 
                     <TextView
-                        android:id="@+id/txtSubTitleAppbar"
+                        android:id="@+id/text_subtitle_appbar"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="12sp"
-                        android:text="Sub Title"/>
+                        android:singleLine="true"
+                        android:text="@string/subtitle_appbar"
+                        style="@style/Base.TextAppearance.AppCompat.Widget.ActionBar.Subtitle"/>
               </LinearLayout>
 
             </androidx.appcompat.widget.Toolbar>
@@ -93,7 +103,8 @@
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -104,27 +115,28 @@
                     android:layout_marginRight="10dp">
 
                     <TextView
-                        android:id="@+id/txtTitleNews"
+                        android:id="@+id/text_title_news"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Title of News"
+                        android:text="@string/title_news"
                         android:textStyle="bold"
                         android:textColor="@color/colorTextTitle"
                         android:textSize="19sp"/>
 
                     <TextView
-                        android:id="@+id/txtTimeAgo"
+                        android:id="@+id/text_time_ago"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/txtTitleNews"
+                        android:layout_below="@+id/text_title_news"
                         android:layout_marginTop="7dp"
-                        android:text="The time ago"/>
+                        android:text="@string/time_ago"/>
                 </RelativeLayout>
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -132,13 +144,14 @@
                     android:orientation="vertical">
 
                     <ProgressBar
-                        android:id="@+id/progressBar"
+                        android:id="@+id/progress_bar"
                         android:layout_width="match_parent"
                         android:layout_marginTop="50dp"
                         android:layout_marginBottom="70dp"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content"
+                        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
                     <WebView
-                        android:id="@+id/webview"
+                        android:id="@+id/web_view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
                 </RelativeLayout>
@@ -146,6 +159,7 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
     <FrameLayout
+        android:id="@+id/date_behavior"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/round_button"
@@ -159,10 +173,11 @@
             android:layout_height="20dp"
             android:src="@drawable/ic_date"/>
         <TextView
-            android:id="@+id/txtPublishedAt"
+            android:id="@+id/text_published_at"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="25dp"
+            android:layout_marginRight="10dp"
             android:text="Friday, Dec 06, 2019"/>
     </FrameLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

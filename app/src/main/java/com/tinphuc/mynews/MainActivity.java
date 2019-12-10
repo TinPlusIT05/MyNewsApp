@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     private RecyclerView.LayoutManager layoutManager;
     private List<Article> articles = new ArrayList<>();
     private SwipeRefreshLayout swipeRefreshLayout;
+    private Article article;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             resultgetNews =
                     newsService.getNewsSearch(query, language, "publishedAt", API_KEY);
         } else {
-            resultgetNews = newsService.getNews(country, API_KEY);
+            resultgetNews = newsService.getNews("us", API_KEY);
         }
 
         swipeRefreshLayout.setRefreshing(true);
@@ -88,7 +89,10 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                     }
                     articles.addAll(response.body().getListArticle());
                     articleAdapter.notifyDataSetChanged();
+
+//                    khởi tạo lệnh khi thực hiện click adapter
                     initListener();
+
 //                    dừng refreshing và đồng nghĩa là tắt vòng tròn chạy
                     swipeRefreshLayout.setRefreshing(false);
                 } else {
@@ -158,7 +162,15 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         articleAdapter.setOnItemClickListener(new ArticleAdapter.OnItemClickListener() {
             @Override
             public void OnItemClick(View view, int position) {
+
+                article = articles.get(position);
                 Intent intent = new Intent(MainActivity.this, NewsDetailActivity.class);
+                intent.putExtra("image", article.getUrlToImage());
+                intent.putExtra("author", article.getAuthor());
+                intent.putExtra("date", article.getPublishedAt());
+                intent.putExtra("url", article.getUrl());
+                intent.putExtra("title", article.getTitle());
+                intent.putExtra("source", article.getSource().getName());
                 startActivity(intent);
             }
         });

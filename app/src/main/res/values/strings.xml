@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">Tin tức</string>
-    <string name="top_heading_one">Top Heading</string>
+    <string name="top_heading_one">Tin hàng đầu</string>
+    <string name="title_news">Title of News</string>
+    <string name="time_ago">The time ago</string>
+    <string name="title_appbar">News for you</string>
+    <string name="subtitle_appbar">Sub Title</string>
+
 </resources>
