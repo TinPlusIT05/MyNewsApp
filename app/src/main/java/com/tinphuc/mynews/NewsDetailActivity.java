@@ -94,6 +94,13 @@ public class NewsDetailActivity extends AppCompatActivity implements AppBarLayou
     }
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+//        Để đảo ngược lại hiệu ứng chuyển tiếp khi tắt layout này ta dùng
+        supportFinishAfterTransition();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case android.R.id.home:
