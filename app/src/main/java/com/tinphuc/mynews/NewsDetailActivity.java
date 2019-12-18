@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
@@ -102,14 +104,36 @@ public class NewsDetailActivity extends AppCompatActivity implements AppBarLayou
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+
+        int id = item.getItemId();
+        switch (id){
             case android.R.id.home:
                 onBackPressed();
                 return true;
-
-            default:break;
+            case R.id.menu_share:
+                composeEmail();
+                return true;
+            case R.id.menu_view_web:
+                showView();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
+    }
+
+    private void composeEmail() {
+        Intent i = new Intent(Intent.ACTION_SEND);
+        i.setType("text/plain");
+        i.putExtra(Intent.EXTRA_SUBJECT, mSource);
+        String body = mTitle + "\n" + mUrl + "\n" + "\n\n" + "Được chia sẻ từ Ứng dụng Tin tức";
+        i.putExtra(Intent.EXTRA_TEXT, body);
+        startActivity(i);
+    }
+
+    private void showView() {
+        Intent i = new Intent(Intent.ACTION_VIEW);
+        i.setData(Uri.parse(mUrl));
+        startActivity(i);
     }
 
     @Override
@@ -136,5 +160,11 @@ public class NewsDetailActivity extends AppCompatActivity implements AppBarLayou
         webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
         webView.setWebViewClient(new WebViewClient());
         webView.loadUrl(url);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_news, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 }
