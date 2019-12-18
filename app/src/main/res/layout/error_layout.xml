@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBackground"
+    android:padding="7dp"
+    android:id="@+id/error_layout"
+    android:visibility="gone">
+
+    <ImageView
+        android:id="@+id/error_image"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/no_result"
+        android:layout_marginTop="60dp"/>
+
+    <TextView
+        android:id="@+id/text_error_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/error_image"
+        android:text="Có lỗi xảy ra"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_centerHorizontal="true"/>
+
+    <TextView
+        android:id="@+id/text_error_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/text_error_title"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:textSize="17sp"
+        android:text="Không thể kết nối với Internet" />
+
+    <Button
+        android:id="@+id/button_try_again"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_error"
+        android:text="Thử lại"
+        android:focusable="true"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/text_error_message"
+        android:textColor="@color/colorBackground"
+        android:textSize="17sp"
+        android:layout_marginTop="20dp"/>
+</RelativeLayout>

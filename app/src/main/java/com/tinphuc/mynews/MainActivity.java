@@ -15,8 +15,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tinphuc.mynews.Adapter.ArticleAdapter;
@@ -36,6 +39,7 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener{
 
     private static final String API_KEY = "c91ee0f2487d4f9eb6140b6711a6af19";
+    private TextView topHeading;
     private RecyclerView newsRecyView;
     private ArticleAdapter articleAdapter;
     private RecyclerView.LayoutManager layoutManager;
@@ -43,11 +47,18 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     private SwipeRefreshLayout swipeRefreshLayout;
     private Article article;
 
+    private RelativeLayout errorLayout;
+    private ImageView errorImage;
+    private TextView textErrorTitle, textErrorMessage;
+    private Button buttonTryAgain;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        topHeading = findViewById(R.id.txtTopHeading);
         newsRecyView = findViewById(R.id.newsRecyView);
         swipeRefreshLayout = findViewById(R.id.swipe_fresh_layout);
 
@@ -65,9 +76,20 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
         onLoadingLayoutRefresh(null);
 
+        errorLayout = findViewById(R.id.error_layout);
+        errorImage = findViewById(R.id.error_image);
+        textErrorTitle = findViewById(R.id.text_error_title);
+        textErrorMessage = findViewById(R.id.text_error_message);
+        buttonTryAgain = findViewById(R.id.button_try_again);
+
     }
 
     public void LoadJson(final String query) {
+
+        topHeading.setText("Top Headlines");
+//        set cho view errorLayout luôn GONE;
+        errorLayout.setVisibility(View.GONE);
+
 //        Thực hiện request
         NewsService newsService = RetrofitClient.getClient().create(NewsService.class);
         String country = Utils.getCountry();
@@ -100,15 +122,33 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 //                    dừng refreshing và đồng nghĩa là tắt vòng tròn chạy
                     swipeRefreshLayout.setRefreshing(false);
                 } else {
+                    topHeading.setVisibility(View.INVISIBLE);
                     swipeRefreshLayout.setRefreshing(false);
-                    Toast.makeText(MainActivity.this,
-                            "Kết nối thất bại !", Toast.LENGTH_LONG);
+
+                    String errorCode;
+                    switch (response.code()){
+                        case 404:
+                            errorCode = "404 not found!";
+                            break;
+                        case 500:
+                            errorCode = "500 error server";
+                            break;
+                        default:
+                            errorCode = "Unknown error!";
+                            break;
+                    }
+                    showErrorMessage(R.drawable.no_result, "Không có dữ liệu",
+                            "Vui lòng kết nối và thử lại" + errorCode);
                 }
             }
 
+            //Phương thức này dùng để chỉ ngoại lệ xảy không trong phạm vị loading dữ liệu về
             @Override
             public void onFailure(Call<News> call, Throwable t) {
+                topHeading.setVisibility(View.INVISIBLE);
                 swipeRefreshLayout.setRefreshing(false);
+                showErrorMessage(R.drawable.oops, "Rất tiếc! đã xảy ra lỗi",
+                        t.toString());
             }
         });
     }
@@ -186,6 +226,22 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                     startActivity(intent, optionsCompat.toBundle());
                 }else
                     startActivity(intent);
+            }
+        });
+    }
+
+    private void showErrorMessage(int imageView, String errorTitle, String errorMessage){
+
+        if(errorLayout.getVisibility() == View.GONE){
+            errorLayout.setVisibility(View.VISIBLE);
+        }
+        errorImage.setImageResource(imageView);
+        textErrorTitle.setText(errorTitle);
+        textErrorMessage.setText(errorMessage);
+        buttonTryAgain.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onLoadingLayoutRefresh(null);
             }
         });
     }
